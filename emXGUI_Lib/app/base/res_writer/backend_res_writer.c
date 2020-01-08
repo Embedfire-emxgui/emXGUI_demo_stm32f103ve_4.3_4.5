@@ -493,8 +493,10 @@ FRESULT Burn_Content(void)
           LED_RED;
           return result;
         }      
+//				GUI_DEBUG("write_addr : %d --1-------",write_addr);
         SPI_FLASH_BufferWrite(tempbuf,write_addr,bw);  //拷贝数据到外部flash上    
-        
+//				GUI_DEBUG("bw : %d -----2----",bw);
+
 //        rx_buff = (uint8_t *)GUI_VMEM_Alloc(bw);
 //        SPI_FLASH_BufferRead(rx_buff,write_addr,bw);
 //    
@@ -651,7 +653,7 @@ FRESULT BurnFile(void)
   {
    src_dir =  (char *)GUI_VMEM_Alloc(BUFFER_SIZE);
    full_file_name =  (char *)GUI_VMEM_Alloc(BUFFER_SIZE);
-   line_temp =  (char *)GUI_VMEM_Alloc(BUFFER_SIZE);
+   line_temp =  (char *)GUI_VMEM_Alloc(BUFFER_SIZE*2);
    fp = (FIL *)GUI_VMEM_Alloc(sizeof(FIL));
   }
 
@@ -712,7 +714,7 @@ exit:
   {
     GUI_VMEM_Free(src_dir);
     GUI_VMEM_Free(full_file_name);
-    GUI_VMEM_Free(line_temp);
+    GUI_VMEM_Free(line_temp);//释放这块内存的时候会报错,烧写完要重启开发不影响使用了
     GUI_VMEM_Free(fp);
   }
     

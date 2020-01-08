@@ -1,32 +1,97 @@
+
 /**
   ******************************************************************************
-  * @file    stm32_eval_sdio_sd.h
+  * @file    stm3210e_eval_sdio_sd.h
   * @author  MCD Application Team
-  * @version V4.5.0
-  * @date    07-March-2011
+  * @version V5.0.1
+  * @date    05-March-2012
   * @brief   This file contains all the functions prototypes for the SD Card 
-  *          stm32_eval_sdio_sd driver firmware library.
+  *          stm3210e_eval_sdio_sd driver firmware library.
   ******************************************************************************
   * @attention
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
   *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************  
-  */ 
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SDIO_SDCARD_H
-#define __SDIO_SDCARD_H
+#ifndef __STM3210E_EVAL_SDIO_SD_H
+#define __STM3210E_EVAL_SDIO_SD_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
-/* Exported types ------------------------------------------------------------*/
+
+/** @addtogroup Utilities
+  * @{
+  */
+  
+/** @addtogroup STM32_EVAL
+  * @{
+  */ 
+
+/** @addtogroup STM3210E_EVAL
+  * @{
+  */
+  
+/** @addtogroup STM3210E_EVAL_SDIO_SD
+  * @{
+  */  
+/**
+  * @brief  SD FLASH SDIO Interface
+  */ 
+
+#define SD_DETECT_PIN                    GPIO_Pin_11                 /* PF.11 */
+#define SD_DETECT_GPIO_PORT              GPIOF                       /* GPIOF */
+#define SD_DETECT_GPIO_CLK               RCC_APB2Periph_GPIOF
+
+#define SDIO_FIFO_ADDRESS                ((uint32_t)0x40018080)
+/** 
+  * @brief  SDIO Intialization Frequency (400KHz max)
+  */
+#define SDIO_INIT_CLK_DIV                ((uint8_t)0xB2)
+/** 
+  * @brief  SDIO Data Transfer Frequency (25MHz max) 
+  */
+#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x06)
+
+#define SD_SDIO_DMA                      DMA2
+#define SD_SDIO_DMA_CLK                  RCC_AHBPeriph_DMA2
+#define SD_SDIO_DMA_CHANNEL              DMA2_Channel4
+#define SD_SDIO_DMA_FLAG_TC              DMA2_FLAG_TC4
+#define SD_SDIO_DMA_FLAG_TE              DMA2_FLAG_TE4
+#define SD_SDIO_DMA_FLAG_HT              DMA2_FLAG_HT4
+#define SD_SDIO_DMA_FLAG_GL              DMA2_FLAG_GL4
+#define SD_SDIO_DMA_IRQn                 DMA2_Channel4_5_IRQn
+#define SD_SDIO_DMA_IRQHANDLER           DMA2_Channel4_5_IRQHandler
+
+/**
+  * @}
+  */ 
+
+
+
+
+/** @defgroup STM3210E_EVAL_SDIO_SD_Exported_Types
+  * @{
+  */ 
 typedef enum
 {
 /** 
@@ -199,19 +264,14 @@ typedef struct
   uint8_t CardType;
 } SD_CardInfo;
 
-/*宏定义*/
-#define SDIO_FIFO_ADDRESS                ((uint32_t)0x40018080)	 //SDIO_FIOF地址=SDIO地址+0x80至 sdio地址+0xfc
-/** 
-  * @brief  SDIO Intialization Frequency (400KHz max)
+/**
+  * @}
   */
-#define SDIO_INIT_CLK_DIV                ((uint8_t)0xB2)
-/** 
-  * @brief  SDIO Data Transfer Frequency (25MHz max) 
-  */
-/*!< SDIOCLK = HCLK, SDIO_CK = HCLK/(2 + SDIO_TRANSFER_CLK_DIV) */
-#define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x01) 
+  
+/** @defgroup STM3210E_EVAL_SDIO_SD_Exported_Constants
+  * @{
+  */ 
 
-	  
 /** 
   * @brief SDIO Commands  Index 
   */
@@ -264,7 +324,7 @@ typedef struct
 
 /** 
   * @brief Following commands are SD Card Specific commands.
-  *        SDIO_APP_CMD ：CMD55 should be sent before sending these commands. 
+  *        SDIO_APP_CMD should be sent before sending these commands. 
   */
 #define SD_CMD_APP_SD_SET_BUSWIDTH                 ((uint8_t)6)  /*!< For SD Card only */
 #define SD_CMD_SD_APP_STAUS                        ((uint8_t)13) /*!< For SD Card only */
@@ -292,8 +352,10 @@ typedef struct
 #define SD_CMD_SD_APP_SECURE_WRITE_MKB             ((uint8_t)48) /*!< For SD Card only */
   
 /* Uncomment the following line to select the SDIO Data transfer mode */  
+#if !defined (SD_DMA_MODE) && !defined (SD_POLLING_MODE)
 #define SD_DMA_MODE                                ((uint32_t)0x00000000)
 /*#define SD_POLLING_MODE                            ((uint32_t)0x00000002)*/
+#endif
 
 /**
   * @brief  SD detection on its memory slot
@@ -313,8 +375,20 @@ typedef struct
 #define SDIO_SECURE_DIGITAL_IO_COMBO_CARD          ((uint32_t)0x00000006)
 #define SDIO_HIGH_CAPACITY_MMC_CARD                ((uint32_t)0x00000007)
 
+/**
+  * @}
+  */ 
+  
+/** @defgroup STM3210E_EVAL_SDIO_SD_Exported_Macros
+  * @{
+  */ 
+/**
+  * @}
+  */ 
 
-/* Exported functions ------------------------------------------------------- */
+/** @defgroup STM3210E_EVAL_SDIO_SD_Exported_Functions
+  * @{
+  */ 
 void SD_DeInit(void);
 SD_Error SD_Init(void);
 SDTransferState SD_GetStatus(void);
@@ -337,10 +411,34 @@ SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr);
 SD_Error SD_SendStatus(uint32_t *pcardstatus);
 SD_Error SD_SendSDStatus(uint32_t *psdstatus);
 SD_Error SD_ProcessIRQSrc(void);
+void SD_ProcessDMAIRQ(void);
 SD_Error SD_WaitReadOperation(void);
 SD_Error SD_WaitWriteOperation(void);
+#ifdef __cplusplus
+}
+#endif
 
+#endif /* __STM3210E_EVAL_SDIO_SD_H */
+/**
+  * @}
+  */
 
+/**
+  * @}
+  */
 
-#endif /* __SDCARD_H */
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
 
