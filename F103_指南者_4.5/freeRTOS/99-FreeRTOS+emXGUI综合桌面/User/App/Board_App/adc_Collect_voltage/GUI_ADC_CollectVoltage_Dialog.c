@@ -176,8 +176,8 @@ void Circle_Paint(HWND hwnd, HDC hdc)
 
   /* 显示电压百分比 */
   SetTextColor(hdc, MapARGB(hdc, 255, 0, 0, 0));
-  
-	
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   SetFont(hdc, controlFont_64);
   x_sprintf(cbuf, "%d", (int)(ADC_Vol/3.3*100));    // H -> % x_wsprintf(Backlightwbuf, L"%d", i);
   x_mbstowcs(wbuf, cbuf, 128);
@@ -196,7 +196,7 @@ void Circle_Paint(HWND hwnd, HDC hdc)
   x_sprintf(cbuf, "%.2fV", ADC_Vol);
   x_mbstowcs(wbuf, cbuf, 128);
   DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);    // 绘制文字(居中对齐方式)
-  
+	DeleteFont(controlFont_64); 
 }
  
 static LRESULT	CollectVoltage_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

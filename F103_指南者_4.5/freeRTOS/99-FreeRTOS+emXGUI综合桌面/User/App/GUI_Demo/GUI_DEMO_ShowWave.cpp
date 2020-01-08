@@ -27,17 +27,17 @@ extern "C" const char ASCII_24_4BPP[];
 
 //#define	CUR_BOX_SIZE 16
 
-static int LEFT_OFFSET	= 30;
-static int TOP_OFFSET	= 15;
-static int RIGHT_OFFSET = (15);
-static int BOTTOM_OFFSET =(17);
+static int LEFT_OFFSET	= 84;
+static int TOP_OFFSET	= 30;
+static int RIGHT_OFFSET = (50);
+static int BOTTOM_OFFSET =(30);
 
-static int CUR_BOX_SIZE =(15);
+static int CUR_BOX_SIZE =(30);
 
 
 
 //static POINT pt_wav[800];
-static POINT *pt_wav,*pt_wav2;
+static POINT *pt_wav;//,*pt_wav2;
 /* 是否要重新生成随机数波形 */
 static uint8_t scatter_init = 0;
          
@@ -278,17 +278,22 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 
   if (ds->State & BST_PUSHED)
 	{ //按钮是按下状态
-		SetPenColor(hdc, MapRGB(hdc, 120, 120, 120));      //设置文字色
+		SetPenColor(hdc, MapRGB(hdc, 1, 191, 255));      //设置文字色
 	}
 	else
 	{ //按钮是弹起状态
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));
 	}
+	
+  SetPenSize(hdc, 2);
+
+  InflateRect(&rc, 0, -18);
+  rc.w = 36;
   
   for(int i=0; i<4; i++)
   {
     HLine(hdc, rc.x, rc.y, rc.w);
-    rc.y += 5;
+    rc.y += 9;
   }
 }
 static void RB_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
@@ -312,7 +317,7 @@ static void RB_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 
     FillCircle(hdc, rc.x+rc.w/2, rc.y+rc.w/2, rc.w/2);
     SetBrushColor(hdc,MapRGB(hdc,90,174,22));
-    FillCircle(hdc, rc.x+rc.w/2, rc.y+rc.w/2, rc.w/2-3);
+    FillCircle(hdc, rc.x+rc.w/2, rc.y+rc.w/2, rc.w/2-8);
 	}
 	else
 	{ 
@@ -334,8 +339,6 @@ static void scrollbar_owner_draw(DRAWITEM_HDR *ds)
 {
 	HWND hwnd;
 	HDC hdc;
-	HDC hdc_mem;
-	HDC hdc_mem1;
 	RECT rc;
 	RECT rc_cli;
 	//	int i;
@@ -343,34 +346,27 @@ static void scrollbar_owner_draw(DRAWITEM_HDR *ds)
 	hwnd = ds->hwnd;
 	hdc = ds->hDC;
 	GetClientRect(hwnd, &rc_cli);
-
-	hdc_mem = CreateMemoryDC(SURF_SCREEN, rc_cli.w, rc_cli.h);
-	hdc_mem1 = CreateMemoryDC(SURF_SCREEN, rc_cli.w, rc_cli.h);   
-         
-   	
+       	
 	//绘制白色类型的滚动条
-	draw_scrollbar(hwnd, hdc_mem1, RGB888(0, 0, 0), RGB888( 250, 250, 250), RGB888( 255, 255, 255));
+	draw_scrollbar(hwnd, hdc, RGB888(0, 0, 0), RGB888( 250, 250, 250), RGB888( 255, 255, 255));
 	//绘制绿色类型的滚动条
-	draw_scrollbar(hwnd, hdc_mem, RGB888(0, 0, 0), RGB888(	50, 205, 50), RGB888(50, 205, 50));
-   SendMessage(hwnd, SBM_GETTRACKRECT, 0, (LPARAM)&rc);   
+//	draw_scrollbar(hwnd, hdc_mem, RGB888(0, 0, 0), RGB888(	50, 205, 50), RGB888(50, 205, 50));
+//   SendMessage(hwnd, SBM_GETTRACKRECT, 0, (LPARAM)&rc);   
 
 	//左
-	BitBlt(hdc, rc_cli.x, rc_cli.y, rc.x, rc_cli.h, hdc_mem, 0, 0, SRCCOPY);
+//	BitBlt(hdc, rc_cli.x, rc_cli.y, rc.x, rc_cli.h, hdc_mem, 0, 0, SRCCOPY);
 	//右
-	BitBlt(hdc, rc.x + rc.w, 0, rc_cli.w - (rc.x + rc.w) , rc_cli.h, hdc_mem1, rc.x + rc.w, 0, SRCCOPY);
+//	BitBlt(hdc, rc.x + rc.w, 0, rc_cli.w - (rc.x + rc.w) , rc_cli.h, hdc_mem1, rc.x + rc.w, 0, SRCCOPY);
 
 	//绘制滑块
 	if (ds->State & SST_THUMBTRACK)//按下
 	{
-      BitBlt(hdc, rc.x, 0, rc.w, rc_cli.h, hdc_mem1, rc.x, 0, SRCCOPY);
+	draw_scrollbar(hwnd, hdc, RGB888(0, 0, 0), RGB888(	50, 205, 50), RGB888(50, 205, 50));
 	}
 	else//未选中
 	{
-		BitBlt(hdc, rc.x, 0, rc.w, rc_cli.h, hdc_mem, rc.x, 0, SRCCOPY);
+	draw_scrollbar(hwnd, hdc, RGB888(0, 0, 0), RGB888(	50, 205, 50), RGB888(50, 205, 50));
 	}
-	//释放内存MemoryDC
-	DeleteDC(hdc_mem1);
-	DeleteDC(hdc_mem);
 }
 
 static	void btn_draw(HDC hdc,struct __x_obj_item * obj)
@@ -435,7 +431,7 @@ static void DrawFrame(HDC hdc,const POINT *pt,int count,COLORREF color)
 	x =rc_wav.x;
 	y =rc_wav.y+rc_wav.h-1;
 
-	rc.x =2;
+	rc.x =0;
 	rc.y =y-8;
 	rc.w =LEFT_OFFSET-2;
 	rc.h =40;
@@ -454,8 +450,8 @@ static void DrawFrame(HDC hdc,const POINT *pt,int count,COLORREF color)
 
 
 		i++;
-		y -= 20;
-		rc.y -= 20;
+		y -= 40;
+		rc.y -= 40;
 
 	}
 
@@ -467,7 +463,7 @@ static void DrawFrame(HDC hdc,const POINT *pt,int count,COLORREF color)
 	y=rc_wav.y;
 
 	rc.x =x-8;
-	rc.y =rc_wav.y+rc_wav.h-9;
+	rc.y =rc_wav.y+rc_wav.h-1;
 	rc.w =40;
 	rc.h =20;
 
@@ -484,8 +480,8 @@ static void DrawFrame(HDC hdc,const POINT *pt,int count,COLORREF color)
 		}
 
 		i++;
-		x+=20;
-		rc.x+=20;
+		x+=40;
+		rc.x+=40;
 	}
 
 	/////DrawFrame
@@ -649,7 +645,9 @@ static void wave_owner_draw(HDC hdc)
 
         pt_wav[x_cur].x =x_cur;
         pt_wav[x_cur].y =y_cur;
+				
       }
+
     break;
 
     case TRIANGULAR_WAVE:
@@ -728,18 +726,18 @@ static void wave_owner_draw(HDC hdc)
         {
           y_cur = x_rand()%200;
           
-          pt_wav2[x_cur].x =x_cur;
-          pt_wav2[x_cur].y =y_cur;
+          pt_wav[x_cur].x =x_cur;
+          pt_wav[x_cur].y =y_cur;
         }
         
         scatter_init =1;
       }
       
-      for(x_cur=0;x_cur < rc_wav.w;x_cur++)
-      {
-          pt_wav[x_cur].x =pt_wav2[x_cur].x;
-          pt_wav[x_cur].y =pt_wav2[x_cur].y;   
-      }
+//      for(x_cur=0;x_cur < rc_wav.w;x_cur++)
+//      {
+//          pt_wav[x_cur].x =pt_wav2[x_cur].x;
+//          pt_wav[x_cur].y =pt_wav2[x_cur].y;   
+//      }
     }
     break;
     
@@ -747,8 +745,8 @@ static void wave_owner_draw(HDC hdc)
     break;
 
   }	
-
-	DrawFrame(hdc,pt_wav,x_cur,MapRGB(hdc,255,255,255));
+	/* rc_wav.w为刷波形的横坐标长度,对应需要rc_wav.w个point,内存需要申请rc_wav.w个point的空间 */
+	DrawFrame(hdc,pt_wav,rc_wav.w,MapRGB(hdc,255,255,255));
 }
 
 /*============================================================================*/
@@ -767,7 +765,7 @@ static	LRESULT	WaveWinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			y1_cur=30;
 			y2_cur=70;
 			// x_step=50; //50ms
-			y_step_cur=0;
+			y_step_cur=2;
       x_step_cur=0;
 
 
@@ -1062,10 +1060,6 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 	switch(msg)
 	{
 	case WM_CREATE:
-  
-      /* 波形数据需要使用的空间 */
-      pt_wav = (POINT*)GUI_VMEM_Alloc(sizeof(POINT)*800);
-      pt_wav2 = (POINT*)GUI_VMEM_Alloc(sizeof(POINT)*800);
 
 			x1_cur=15;
 			x2_cur=50;
@@ -1090,17 +1084,41 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			GetClientRect(hwnd,&rc_main);
 			CopyRect(&rc_wav,&rc_main);
 			InflateRectEx(&rc_wav,-LEFT_OFFSET,-TOP_OFFSET,-RIGHT_OFFSET,-BOTTOM_OFFSET);
+			
+      /* 波形数据需要使用的空间 */
+      pt_wav = (POINT*)GUI_VMEM_Alloc(sizeof(POINT)*rc_wav.w);
+//      pt_wav2 = (POINT*)GUI_VMEM_Alloc(sizeof(POINT)*rc_wav.w);
+
+			rc_x1_cur.x =rc_wav.x+x1_cur-CUR_BOX_SIZE/2;
+			rc_x1_cur.y =rc_wav.y-CUR_BOX_SIZE;
+			rc_x1_cur.w =CUR_BOX_SIZE;
+			rc_x1_cur.h =CUR_BOX_SIZE;
+
+			rc_x2_cur.x =rc_wav.x+x2_cur-CUR_BOX_SIZE/2;
+			rc_x2_cur.y =rc_wav.y-CUR_BOX_SIZE;
+			rc_x2_cur.w =CUR_BOX_SIZE;
+			rc_x2_cur.h =CUR_BOX_SIZE;
+
+			rc_y1_cur.x =rc_wav.x+rc_wav.w;
+			rc_y1_cur.y =rc_wav.y+rc_wav.h-y1_cur-CUR_BOX_SIZE/2;
+			rc_y1_cur.w =CUR_BOX_SIZE;
+			rc_y1_cur.h =CUR_BOX_SIZE;
+
+			rc_y2_cur.x =rc_wav.x+rc_wav.w;
+			rc_y2_cur.y =rc_wav.y+rc_wav.h-y2_cur-CUR_BOX_SIZE/2;
+			rc_y2_cur.w =CUR_BOX_SIZE;
+			rc_y2_cur.h =CUR_BOX_SIZE;
       
       /* 底部的标签栏 */
-			rc_label.x =0;
-      rc_label.h =36;
-			rc_label.y =rc_main.h-rc_label.h+1;
-			rc_label.w =300-LEFT_OFFSET-RIGHT_OFFSET+16;
+			rc_label.x =LEFT_OFFSET-10;
+      rc_label.h =64;
+			rc_label.y =rc_main.h-rc_label.h;
+			rc_label.w =620-LEFT_OFFSET-RIGHT_OFFSET+20;
 
-			rc_button.w =73;
-			rc_button.h =rc_main.h-20;
-			rc_button.x =rc_main.w-RIGHT_OFFSET;
-			rc_button.y =0;
+			rc_button.w =150;
+			rc_button.h =rc_main.h-80;
+			rc_button.x =rc_main.w-RIGHT_OFFSET+10;
+			rc_button.y =60;
 	
 
 			if(1)
@@ -1108,34 +1126,34 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 				RECT rc,m_rc[8],cb_rc;
 				HWND wnd;
 
-        rc.w =rc_main.w-60*2+50;
-        rc.h =20;
-        rc.x = 30;
+        rc.w =rc_main.w-60*2;
+        rc.h =40;
+        rc.x = 60;
         rc.y =0;  
 
         CreateWindow(TEXTBOX,L"波形显示",TBS_FLAT|TBS_CENTER|TBS_TOP|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_TEXT5,NULL,NULL);
         
-        rc.w = 22;
-        rc.h = 22;
-        rc.x = 286;
-        rc.y = 5;  
+        rc.w = 60;
+        rc.h = 50;
+        rc.x = 740;
+        rc.y = 0;  
              
         /* 关闭按钮 */  
         wnd=CreateWindow(BUTTON,L"O",	BS_FLAT|WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_EXIT,NULL,NULL); //创建一个按钮.
-        SetWindowFont(wnd,controlFont_32); //设置控件窗口字体.
+        //SetWindowFont(wnd,controlFont_32); //设置控件窗口字体.
 
-				MakeMatrixRect(m_rc,&rc_button,3,13,1,7);
+				MakeMatrixRect(m_rc,&rc_button,2,20,1,7);
         
 				// text_item =x_obj_create_class(L"TextItem",	0xFFFFFFFF,	&rc_button,X_OBJ_VISIBLE,0,text_draw);
 
 				rc =m_rc[0];
 				//OffsetRect(&rc,-100,0);
 
-				rc.x =rc_main.w-rc.w;
+				rc.x =rc_main.w-rc.w-20;
             rc.y += 28;
 				CreateWindow(TEXTBOX,L"模拟输入",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_TEXT1,NULL,NULL);
 
-				OffsetRect(&rc,0,rc.h+10);
+				OffsetRect(&rc,0,rc.h+20);
 				CreateWindow(TEXTBOX,L"频率，单位Hz",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_TEXT2,NULL,NULL);
 
 				OffsetRect(&rc,0,rc.h);
@@ -1143,16 +1161,16 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
             SCROLLINFO sif;
             sif.cbSize	=sizeof(sif);
             sif.fMask		=SIF_ALL;
-            sif.nMin		=5;
-            sif.nMax		=30;
+            sif.nMin		=10;
+            sif.nMax		=20;
             wave_freq = sif.nValue =15;
-            sif.TrackSize		= rc.h;
+            sif.TrackSize		= 30;
             sif.ArrowSize		=0;//20;
 
             wnd = CreateWindow(SCROLLBAR,L"HScroll1",WS_OWNERDRAW|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_SCROLL1,NULL,NULL);
             SendMessage(wnd,SBM_SETSCROLLINFO,TRUE,(LPARAM)&sif);
 			
-            sif.nMin		=5;
+            sif.nMin		=10;
             sif.nMax		=500;
             wave_amp = sif.nValue =100;
 
@@ -1164,12 +1182,11 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
             SendMessage(wnd,SBM_SETSCROLLINFO,TRUE,(LPARAM)&sif);
         }
 				
-        OffsetRect(&rc,0,rc.h+5);
+        OffsetRect(&rc,0,rc.h+20);
         CopyRect(&cb_rc,&rc);
-        cb_rc.x -= 2;
+        cb_rc.x += 5;
         cb_rc.h -= 5;
-        cb_rc.y += 10;
-        cb_rc.w = cb_rc.h;
+        cb_rc.w = cb_rc.h-2;
 
         //创建单选按钮(GroupID号为1).
         CreateWindow(BUTTON,L"",WS_OWNERDRAW|BS_RADIOBOX|WS_VISIBLE,cb_rc.x,cb_rc.y,cb_rc.w,cb_rc.h,hwnd,ID_RB1,NULL,NULL);
@@ -1186,27 +1203,23 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
         /* 设置默认按钮 i g*/
     		SendMessage(GetDlgItem(hwnd,ID_RB1),BM_SETSTATE,BST_CHECKED,0);
 
-        OffsetRect(&rc,-2,rc.h);
+        OffsetRect(&rc,0,rc.h);
 				wnd = CreateWindow(TEXTBOX,L"j",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,cb_rc.w,rc.h,hwnd,ID_TEXT4,NULL,NULL);
-        SetWindowFont(wnd,controlFont_32);
         
         OffsetRect(&rc,cb_rc.w+7,0);
         wnd = CreateWindow(TEXTBOX,L"h",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,cb_rc.w,rc.h,hwnd,ID_TEXT6,NULL,NULL);
-        SetWindowFont(wnd,controlFont_32);
         
         OffsetRect(&rc,cb_rc.w+7,0);
 				wnd = CreateWindow(TEXTBOX,L"i",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,cb_rc.w,rc.h,hwnd,ID_TEXT7,NULL,NULL);
-        SetWindowFont(wnd,controlFont_32);
         
         OffsetRect(&rc,cb_rc.w+10,0);
         wnd = CreateWindow(TEXTBOX,L"g",TBS_FLAT|TBS_CENTER|WS_VISIBLE,rc.x,rc.y,cb_rc.w,rc.h,hwnd,ID_TEXT8,NULL,NULL);
-        SetWindowFont(wnd,controlFont_32);            
             
         /* 按钮 */
 				button_item =x_obj_create_class(L"ButtonItem",	0xFFFFFFFF,	&rc_button,X_OBJ_VISIBLE,0,btn_draw);
 
 				rc.w =rc_main.w-RIGHT_OFFSET-170;
-				rc.h =15;
+				rc.h =30;
 				rc.x =10;
 				rc.y =rc_main.h - 2*rc.h-4;
 
@@ -1223,32 +1236,32 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
         // CreateWindow(TEXTBOX,wbuf,WS_BORDER|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_Y_STR,NULL,NULL);
 
 
-				rc.w =16;
-				rc.h =16;
-				rc.x =rc_main.w-rc.w;
+				rc.w =30;
+				rc.h =30;
+				rc.x =rc_main.w-rc.w-20;
 				rc.y =rc_main.h - 2*rc.h-4;
 				x_obj_create(L"+",	ID_Y_STEP_ADD,	&rc,	X_OBJ_VISIBLE,0,button_item);
 
-				rc.w =40;
+				rc.w =80;
 				OffsetRect(&rc,-(rc.w+2),0);
 				x_obj_create(y_step_str[y_step_cur],ID_Y_STEP,	&rc,	X_OBJ_VISIBLE,0,button_item);
 
-				rc.w =16;
+				rc.w =30;
 				OffsetRect(&rc,-(rc.w+2),0);
 				x_obj_create(L"-",	ID_Y_STEP_SUB,	&rc,	X_OBJ_VISIBLE,0,button_item);
 				
-				rc.w =16;
-				rc.h =16;
-				rc.x =rc_main.w-rc.w;
+				rc.w =30;
+				rc.h =30;
+				rc.x =rc_main.w-rc.w-20;
 				rc.y =rc_main.h - 2*rc.h-4;
         OffsetRect(&rc,0,rc.h+2);
         x_obj_create(L"+",	ID_X_STEP_ADD,	&rc,	X_OBJ_VISIBLE,0,button_item);
 
-				rc.w =40;
+				rc.w =80;
 				OffsetRect(&rc,-(rc.w+2),0);
 				x_obj_create(x_step_str[x_step_cur],ID_X_STEP,	&rc,	X_OBJ_VISIBLE,0,button_item);
 
-				rc.w =16;
+				rc.w =30;
 				OffsetRect(&rc,-(rc.w+2),0);
 				x_obj_create(L"-",	ID_X_STEP_SUB,	&rc,	X_OBJ_VISIBLE,0,button_item);
 				OffsetRect(&rc,-(rc.w+2),0);
@@ -1270,9 +1283,9 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 					wcex.hCursor		= NULL;
 					
           rc.x =0;
-					rc.y =20;
-					rc.w =245;
-					rc.h =rc_main.h-rc.y-35;
+					rc.y =40;
+					rc.w =620;
+					rc.h =rc_main.h-rc.y-70;
 					////创建"波形显示"的控件.
 					CreateWindow(&wcex,L"---",WS_CLIPCHILDREN|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,ID_WAVE,NULL,NULL);
 
@@ -1603,23 +1616,22 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 #if 1
     {
-      MakeMatrixRect(m_rc,&rc_label,1,1,3,2);
+      MakeMatrixRect(m_rc,&rc_label,10,2,3,2);
 
       ////X Text
       SetTextColor(hdc,MapRGB(hdc,255,255,255));
       SetPenColor(hdc,MapRGB(hdc,255,255,255));
       SetBrushColor(hdc,MapRGB(hdc,90,174,22));
 
-      m_rc[0].w -= 20; 
+
       x_wsprintf(wbuf,L"X1:%dmS",x1_cur*x_step[x_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[0],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);//|DT_VCENTER
       
-      m_rc[1].w -= 20; 
-      m_rc[1].x -= 20; 
+
       x_wsprintf(wbuf,L"X2:%dmS",x2_cur*x_step[x_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[1],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);
 
-      m_rc[2].x -= 40; 
+
       x_wsprintf(wbuf,L"X2-X1:%dmS",(x2_cur-x1_cur)*x_step[x_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[2],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);
 
@@ -1628,16 +1640,15 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
       SetPenColor(hdc,MapRGB(hdc,255,255,255));
       SetBrushColor(hdc,MapRGB(hdc,90,174,22));
 
-      m_rc[3].w -= 20; 
+
       x_wsprintf(wbuf,L"Y1:%.1fmV",y1_cur*y_step[y_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[3],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);
 
-      m_rc[4].w -= 20; 
-      m_rc[4].x -= 20; 
+
       x_wsprintf(wbuf,L"Y2:%.1fmV",y2_cur*y_step[y_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[4],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);
 
-      m_rc[5].x -= 40; 
+
       x_wsprintf(wbuf,L"Y2-Y1:%.1fmV",(y2_cur-y1_cur)*y_step[y_step_cur]);
       DrawText(hdc,wbuf,-1,&m_rc[5],DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_BKGND|DT_BORDER);
     }
@@ -1660,7 +1671,7 @@ static	LRESULT	WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 //		DeleteFont(hFont20);
 //		DeleteFont(hFont24);
     GUI_VMEM_Free(pt_wav);
-    GUI_VMEM_Free(pt_wav2);
+//    GUI_VMEM_Free(pt_wav2);
 
     /* 重置随机波形标志 */
     wave_format = SINE_WAVE;

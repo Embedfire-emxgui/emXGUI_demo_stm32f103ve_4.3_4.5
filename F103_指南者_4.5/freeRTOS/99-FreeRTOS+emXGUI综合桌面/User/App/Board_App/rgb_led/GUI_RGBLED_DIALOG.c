@@ -214,7 +214,9 @@ static void GUI_TEXTLED_OwnerDraw(DRAWITEM_HDR *ds)
 
   hdc = ds->hDC;   
   rc = ds->rc; 
-
+	HFONT controlFont_32,controlFont_64;
+	controlFont_32 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_32);
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   /* 显示亮度图标 */
   if (ds->ID == ID_TEXTBOX_SMALL)
   {
@@ -228,6 +230,9 @@ static void GUI_TEXTLED_OwnerDraw(DRAWITEM_HDR *ds)
   SetTextColor(hdc, MapRGB(hdc, leddlg_S.col_R, leddlg_S.col_G, leddlg_S.col_B));
 
   DrawText(hdc, L"I", -1, &rc, NULL);//绘制文字(居中对齐方式)
+
+	DeleteFont(controlFont_32);	
+	DeleteFont(controlFont_64);	
 }
 /**
   * @brief  百分比文本重绘
@@ -251,6 +256,9 @@ static void GUI_RGBPCTTEXT_OwnerDraw(DRAWITEM_HDR *ds)
 
   GetWindowText(ds->hwnd, wbuf, 128); //获得按钮控件的文字  
 
+	HFONT controlFont_32,controlFont_64;
+	controlFont_32 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_32);
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   //设置文本的颜色
   SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));
   SetFont(hdc, controlFont_32);
@@ -259,8 +267,8 @@ static void GUI_RGBPCTTEXT_OwnerDraw(DRAWITEM_HDR *ds)
   SetFont(hdc, controlFont_64);
   rc_cli.w -= 37;
   DrawText(hdc, wbuf,-1,&rc_cli,DT_BOTTOM|DT_RIGHT);
-  
-
+	DeleteFont(controlFont_64);
+	DeleteFont(controlFont_32);	
 }
 
 static void radiobox_owner_draw(DRAWITEM_HDR *ds) // 单选按钮外观
@@ -291,7 +299,8 @@ static void radiobox_owner_draw(DRAWITEM_HDR *ds) // 单选按钮外观
   EnableAntiAlias(hdc, TRUE);
   FillCircle(hdc, rc.w/2, rc.w/2, MIN(rc.w, rc.h)/2);
   EnableAntiAlias(hdc, FALSE);
-  
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   SetFont(hdc, controlFont_64);
   rc.y += 5;
   rc.h -= 5;
@@ -301,7 +310,7 @@ static void radiobox_owner_draw(DRAWITEM_HDR *ds) // 单选按钮外观
   SetFont(hdc, defaultFont);
   SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));
   DrawText(hdc, wbuf, -1, &rc, DT_CENTER|DT_BOTTOM);//绘制文字(居中对齐方式)
-  
+  DeleteFont(controlFont_64); 
 }
 
 static	LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

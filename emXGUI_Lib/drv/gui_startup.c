@@ -103,7 +103,7 @@ void	GUI_Startup(void)
   hFont = GUI_Default_FontInit(); //初始化默认的字体
 	if(hFont==NULL)
 	{
-    GUI_ERROR("GUI_Default_FontInit Failed.");
+    GUI_ERROR("GUI_Default_FontInit Failed.Please Copy Resource To Flash");
 		return;
 	} 
 	GUI_SetDefFont(hFont);  //设置默认的字体

@@ -111,12 +111,13 @@ static void waive_btn_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   { //按钮是弹起状态
     SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
   }
-  
+  HFONT controlFont_48;
+  controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);
   GetWindowText(ds->hwnd, wbuf, 128); //获得按钮控件的文字
   SetFont(hdc, controlFont_48);
   /* 显示文本 */
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);//绘制文字(居中对齐方式)
-  
+  DeleteFont(controlFont_48);
 }
 
 static void btn_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
@@ -186,6 +187,8 @@ static void _draw_listbox(HDC hdc,HWND hwnd,COLOR_RGB32 text_c,COLOR_RGB32 back_
 
   if (fontsize == 32)
   {
+		HFONT controlFont_32;
+		controlFont_32 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_32);
     SetFont(hdc,controlFont_32);
   }
   else
@@ -206,7 +209,7 @@ static void _draw_listbox(HDC hdc,HWND hwnd,COLOR_RGB32 text_c,COLOR_RGB32 back_
 
 		i++;
 	}
-  
+  DeleteFont(controlFont_32);
 }
 
 static void listbox_owner_draw(DRAWITEM_HDR *ds)
@@ -272,8 +275,8 @@ static void Dial_OwnerDraw(DRAWITEM_HDR *ds)  // 绘制表盘
   
   x_wsprintf(wbuf, L"%02d %02d", Hour, Min);
   
-  // HFONT controlFont_24;
-  // controlFont_24 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_24);
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   
   SetFont(hdc, controlFont_64);
   SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));
@@ -286,6 +289,7 @@ static void Dial_OwnerDraw(DRAWITEM_HDR *ds)  // 绘制表盘
 
   // DeleteFont(controlFont_24);
   EnableAntiAlias(hdc, FALSE);
+	DeleteFont(controlFont_64); 
 }
 
 /*
@@ -330,7 +334,8 @@ static void date_OwnerDraw(DRAWITEM_HDR *ds)
   x_wsprintf(wbuf, L"%d", systmtime.tm_year);
   
   SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));
-	
+  HFONT controlFont_48;
+  controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);	
   SetFont(hdc, controlFont_48);
   DrawText(hdc, wbuf, -1, &rc1, DT_VCENTER|DT_CENTER);
 	
@@ -364,7 +369,7 @@ static void date_OwnerDraw(DRAWITEM_HDR *ds)
   /* 显示周 */
   SetFont(hdc, defaultFont);
   DrawText(hdc, Week_List[systmtime.tm_wday], -1, &rc3, DT_VCENTER|DT_CENTER);
-
+  DeleteFont(controlFont_48);
 }
 
 /*

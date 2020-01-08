@@ -339,14 +339,17 @@ static void button_owner_draw(DRAWITEM_HDR *ds)
 
   GetWindowText(ds->hwnd,wbuf,128); //获得按钮控件的文字  
   GetClientRect(hwnd, &rc_cli);//得到控件的位置
-
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
+	HFONT controlFont_48;
+	controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);	
   //播放键使用100*100的字体
   if(ds->ID == ID_RECORD_PLAY)
   {
     SetFont(hdc, controlFont_64);
   }
   else
-  {
+  {			
     SetFont(hdc, controlFont_48);
   }
 
@@ -368,6 +371,8 @@ static void button_owner_draw(DRAWITEM_HDR *ds)
   }													   
 
   DrawText(hdc, wbuf,-1,&rc_cli,DT_VCENTER);//绘制文字(居中对齐方式)
+	DeleteFont(controlFont_64);
+	DeleteFont(controlFont_48);
 }
 
 /*
@@ -573,7 +578,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                          record_icon[xC].rc.w,record_icon[xC].rc.h,
                          hwnd, record_icon[xC].id, NULL, NULL); 
          }
-          
+				 ShowWindow(GetDlgItem(hwnd, ID_RECORD_BUGLE), SW_HIDE);     // 隐藏外发喇叭选项(不支持)的按钮
          ShowWindow(GetDlgItem(hwnd, ID_RECORD_PADNC), SW_HIDE);     // 窗口隐藏继续和暂停的按钮
          EnableWindow(GetDlgItem(hwnd, ID_RECORD_STOP), DISABLE);    // 禁用停止按钮
 
@@ -828,7 +833,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 							SetTimer(hwnd, ID_Record_Timer, 1000, TMR_START, NULL);                    // 开启录音计时定时器
 							/* 按钮处理 */
-              SetWindowText(GetDlgItem(hwnd, ID_RECORD_BUGLE), L"Q");
+//              SetWindowText(GetDlgItem(hwnd, ID_RECORD_BUGLE), L"Q");
 							SetWindowText(GetDlgItem(hwnd, ID_RECORD_STATE), L"正在录音");             // 设置录音机状态
 							ShowWindow(GetDlgItem(hwnd, ID_RECORD_START), SW_HIDE);                    // 窗口隐藏开始录音的按钮
 							ShowWindow(GetDlgItem(hwnd, ID_RECORD_PADNC), SW_SHOW);                    // 窗口显示继续和暂停的按钮
@@ -904,7 +909,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							}
             }
             break;
-            
+#if 0
             /* 音频输出选择按钮 */
             case ID_RECORD_BUGLE:
             {
@@ -924,7 +929,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							}
             }
             break;
-            
+#endif
             /* 音量调节按钮被按下 */
             case ID_RECORD_bPOWER:
             {

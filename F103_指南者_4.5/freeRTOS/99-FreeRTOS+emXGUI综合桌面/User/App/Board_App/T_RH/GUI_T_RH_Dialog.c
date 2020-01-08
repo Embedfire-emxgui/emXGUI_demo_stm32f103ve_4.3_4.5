@@ -164,7 +164,8 @@ static LRESULT	Collect_DTH11_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
       //x_wsprintf(wbuf, L"%d.%d",99,9);
       x_wsprintf(wbuf, L"%d.%d", DHT11_Data.temp_int,DHT11_Data.temp_deci);
       SetTextColor(hdc, MapRGB(hdc, 50, 50, 50));
-
+      HFONT controlFont_64;
+			controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
       SetFont(hdc, controlFont_64);
       
 			rc.w -= 25;
@@ -190,7 +191,7 @@ static LRESULT	Collect_DTH11_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
       rc.y += 15;
 	
       DrawText(hdc, L"%", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
-      
+      DeleteFont(controlFont_64); 
       EndPaint(hwnd, &ps);
       break;
     }

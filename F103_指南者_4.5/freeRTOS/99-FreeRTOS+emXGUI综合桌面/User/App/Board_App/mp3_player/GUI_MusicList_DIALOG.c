@@ -56,7 +56,8 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 	{ //按钮是弹起状态
 		SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
 	}
-
+  HFONT controlFont_48;
+  controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);
 	  /* 使用控制图标字体 */
 	SetFont(hdc, controlFont_48);
 
@@ -66,7 +67,7 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 
   /* 恢复默认字体 */
 	SetFont(hdc, defaultFont);
-
+	DeleteFont(controlFont_48);
 }
 static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 {
@@ -100,7 +101,8 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 	{ //按钮是弹起状态
 		SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
 	}
-
+  HFONT controlFont_48;
+  controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);	
 	  /* 使用控制图标字体 */
 	SetFont(hdc, controlFont_48);
 
@@ -112,6 +114,7 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   /* 恢复默认字体 */
 	SetFont(hdc, defaultFont);
    DrawText(hdc, L"返回", -1, &rc, DT_VCENTER);
+	DeleteFont(controlFont_48);
 }
 
 HWND music_list_hwnd;

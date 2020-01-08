@@ -153,10 +153,14 @@ static void det_exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
     SetTextColor(hdc, MapRGB(hdc, 50, 50, 50));
   }
 
+	HFONT controlFont_48;
+	controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);			
+	
   SetFont(hdc, controlFont_48);
 	GetWindowText(hwnd, wbuf, 128); //获得按钮控件的文字
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
 
+	DeleteFont(controlFont_48);
 }
 
 /*
@@ -192,11 +196,13 @@ static void det_button_OwnerDraw(DRAWITEM_HDR *ds)
 	GetWindowText(hwnd, wbuf, 128); //获得按钮控件的文字
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
   rc.w -= 10;	
+	HFONT controlFont_32;
+  controlFont_32 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_32);
   SetFont(hdc, controlFont_32);
   DrawText(hdc, L"C", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
   SetPenColor(hdc, MapRGB(hdc, 22, 22, 22));
   HLine(hdc, rc.x, rc.y+rc.h-1, rc.x+rc.w+10);
-  
+  DeleteFont(controlFont_32);  
 }
 
 /*

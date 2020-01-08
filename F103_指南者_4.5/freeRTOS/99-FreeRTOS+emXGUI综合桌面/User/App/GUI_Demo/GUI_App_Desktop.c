@@ -87,18 +87,18 @@ static void App_GUI_DEMO_Hello(HWND hwnd)
 #endif
 
 
-void GUI_PicViewer_Dialog(void);
-void	GUI_DEMO_Graphics_Accelerator(void);
+//void GUI_PicViewer_Dialog(void);
+//void	GUI_DEMO_Graphics_Accelerator(void);
 void	GUI_DEMO_ShowWave(void);
 extern int	Calculator_WinMain(void);
 
 static struct __obj_list menu_list_1[] = {
 
-  L"图形加速器",  NULL, 	L"e", RGB_WHITE,	 GUI_DEMO_Graphics_Accelerator,//GUI_PicViewer_Dialog,//
+//  L"图形加速器",  NULL, 	L"e", RGB_WHITE,	 GUI_DEMO_Graphics_Accelerator,//GUI_PicViewer_Dialog,//
   L"波形显示",		NULL,	  L"B", RGB_WHITE,   GUI_DEMO_ShowWave,//
 		
 //  L"仪表盘",		  NULL,	  L"H", RGB_WHITE,   dummy,
-  L"计算器",	    NULL, 	L"Z", RGB_WHITE,	 Calculator_WinMain,//dummy,//
+//  L"计算器",	    NULL, 	L"Z", RGB_WHITE,	 Calculator_WinMain,//dummy,//
 
 	NULL,	NULL,NULL,	NULL, NULL,//结束标志!
 
@@ -160,7 +160,9 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 	//	DrawCircle(hdc,rc.x+rc.w/2,rc.x+rc.w/2,rc.w/2); //画矩形外框
 
 	  /* 使用控制图标字体 */
-	SetFont(hdc, controlFont_32);
+  HFONT controlFont_64;
+  controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
+	SetFont(hdc, controlFont_64);
 	//  SetTextColor(hdc,MapRGB(hdc,255,255,255));
 
 	GetWindowText(ds->hwnd, wbuf, 128); //获得按钮控件的文字
@@ -170,7 +172,7 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 
   /* 恢复默认字体 */
 	SetFont(hdc, defaultFont);
-
+  DeleteFont(controlFont_64);
 }
 
 static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
@@ -226,19 +228,20 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 	//  
 	//  FillCircle(hdc,rc.x+rc.w/2,rc.x+rc.w/2,rc.w/2); //用矩形填充背景FillCircle
 	//	DrawCircle(hdc,rc.x+rc.w/2,rc.x+rc.w/2,rc.w/2); //画矩形外框
-
+  HFONT controlFont_64;
+  controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
 	  /* 使用控制图标字体 */
-	SetFont(hdc, controlFont_32);
+	SetFont(hdc, controlFont_64);
 	//  SetTextColor(hdc,MapRGB(hdc,255,255,255));
 
 	GetWindowText(ds->hwnd, wbuf, 128); //获得按钮控件的文字
 
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER);//绘制文字(居中对齐方式)
-   rc.x = 13; 
-   rc.y = rc.y - 1;
+   rc.x = 40; 
   /* 恢复默认字体 */
 	SetFont(hdc, defaultFont);
   DrawText(hdc, L"返回", -1, &rc, DT_VCENTER);//DT_VCENTER
+  DeleteFont(controlFont_64);	
 }
 
 
@@ -288,7 +291,7 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		chwnd = CreateWindow(&wcex_ListMenu,
                             L"ListMenu1",
                             WS_VISIBLE | LMS_ICONFRAME| LMS_ICONINNERFRAME,
-                            rc.x + 30, rc.y + 20, rc.w - 60, rc.h - 20,
+                            rc.x + 100, rc.y + 70, rc.w - 200, rc.h - 70,
                             hwnd,
                             ID_LIST_1,
                             NULL,
@@ -300,17 +303,14 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		/* 上一步按钮 */
     wnd = CreateWindow(BUTTON, L"L", BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-      2, rc.h / 2, 30, 30, hwnd, ICON_VIEWER_ID_PREV, NULL, NULL);
-    SetWindowFont(wnd, controlFont_48); //设置控件窗口字体.
+      0, (rc.h -80)/ 2, 70, 70, hwnd, ICON_VIEWER_ID_PREV, NULL, NULL);
 
      /* 下一步按钮 */
     wnd = CreateWindow(BUTTON, L"K", BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-      rc.w - 30+2, (rc.h) / 2, 30, 30, hwnd, ICON_VIEWER_ID_NEXT, NULL, NULL);
-    SetWindowFont(wnd, controlFont_48); //设置控件窗口字体.ID_EXIT
+      rc.w - 65, (rc.h-80) / 2, 70, 70, hwnd, ICON_VIEWER_ID_NEXT, NULL, NULL);
      
-    SetWindowFont(wnd, controlFont_32); //设置控件窗口字体
     CreateWindow(BUTTON, L"F", BS_FLAT | BS_NOTIFY|WS_OWNERDRAW |WS_VISIBLE,
-                  0, 0, 40, 25, hwnd, ID_EXIT, NULL, NULL);
+                  0, 0, 200, 70, hwnd, ID_EXIT, NULL, NULL);
    
 		//SetTimer(hwnd, 1, 50, TMR_START, NULL);
 	}
@@ -398,7 +398,7 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     SetFont(hdc, defaultFont);
 
     SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
-    rc.y += 2;
+    rc.y += 20;
    
     DrawText(hdc, L"emXGUI@Embedfire STM32F103", -1, &rc, DT_CENTER);
 

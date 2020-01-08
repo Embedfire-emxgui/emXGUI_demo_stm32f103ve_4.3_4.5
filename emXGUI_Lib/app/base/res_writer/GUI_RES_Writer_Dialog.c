@@ -45,7 +45,7 @@ static void App_FLASH_Writer(void )
     /* 创建线程运行自己 */
     GUI_Thread_Create((void(*)(void*))App_FLASH_Writer,  /* 任务入口函数 */
                             "Flash writer",/* 任务名字 */
-                            5*1024,  /* 任务栈大小 */
+                            3*1024,  /* 任务栈大小 */
                             NULL, /* 任务入口函数参数 */
                             1,    /* 任务的优先级 */
                             10); /* 任务时间片，部分任务不支持 */
@@ -93,10 +93,14 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));
 	}
   
+  SetPenSize(hdc, 2);
+
+  InflateRect(&rc, 0, -1);
+  
   for(int i=0; i<4; i++)
   {
     HLine(hdc, rc.x, rc.y, rc.w);
-    rc.y += 5;
+    rc.y += 9;
   }
 }
 
@@ -119,7 +123,7 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   }
   else if (ds->State & BST_PUSHED)
 	{ //按钮是按下状态
-    InflateRect(&rc, -1, -1);
+    InflateRect(&rc, -2, -2);
     SetBrushColor(hdc, MapRGB(hdc, 150, 150, 120));
     SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));      //设置文字色
 	}
@@ -147,20 +151,19 @@ static	LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	//static RECT rc_R, rc_G, rc_B;//RGB分量指示框
   
-  const WCHAR no_res_info[] = L"   Some resources not found in the \r\nFLASH.\
+  const WCHAR no_res_info[] = L"Some resources not found in the FLASH.\r\n\
 Follow the instructions below:\r\n\r\n\
-1.Insert an SD card with [srcdata] \r\n\resource.\
-3.Power up again the board.\r\n\
-2.Click the button below to load \r\n\
-the resources.";
+1.Insert an SD card with [srcdata] resource.\r\n\
+2.Click the button below to load the resources.\r\n\
+3.Power up again the board.";
+				
   
-  const WCHAR normal_res_info[] = L"Please [Exit] if you don't know what\r\nto do!!!\
-\r\nThis app is use to reload resources\r\n\
-If you really want to reload resou-\r\nrces:\r\n\
-1.Insert an SD card with [srcdata] \r\nresource.\
-3.Power up again the board.\r\n\
-2.Click the button below to load \r\n\
-  the resources.";
+  const WCHAR normal_res_info[] = L"Please [Exit] if you don't know what to do!!!\r\n\
+This app is use to reload resources\r\n\
+If you really want to reload resources:\r\n\
+1.Insert an SD card with [srcdata] resource.\r\n\
+2.Click the button below to load the resources.\r\n\
+3.Power up again the board.";
   
   /* 默认显示信息 */
   const WCHAR *pStr = normal_res_info;
@@ -185,7 +188,7 @@ If you really want to reload resou-\r\nrces:\r\n\
           rc0.x = 0;
           rc0.y = 0;
           rc0.w = rc.w;
-          rc0.h = rc.h/5;
+          rc0.h = rc.h/5-3;
           
           wnd = CreateWindow(TEXTBOX,L"GUI FLASH Writer" ,WS_VISIBLE,
                                 rc0.x, rc0.y, rc0.w, rc0.h, hwnd, ID_TITLE, NULL, NULL); 
@@ -196,10 +199,10 @@ If you really want to reload resou-\r\nrces:\r\n\
           if(!res_not_found_flag)
           {  
             /* 退出按钮 */
-            rc0.w = 23;
-            rc0.y = 10;
+            rc0.w = 36;
+            rc0.y = (rc.h/5-rc0.h)/2;;
             rc0.x = rc.w - rc0.w - 5*2;
-            rc0.h = 25;
+            rc0.h = 36;
 
             CreateWindow(BUTTON, L"Exit",BS_FLAT | WS_VISIBLE | WS_OWNERDRAW,
                           rc0.x, rc0.y, rc0.w, rc0.h, hwnd, ID_EXIT, NULL, NULL); 
@@ -209,15 +212,15 @@ If you really want to reload resou-\r\nrces:\r\n\
           rc0.x = 5;
           rc0.y = 1*rc.h/5;
           rc0.w = rc.w - rc0.x*2;
-          rc0.h = 3*rc.h/5+5;
+          rc0.h = 2*rc.h/5;
       
           CreateWindow(TEXTBOX,pStr ,WS_VISIBLE,
                         rc0.x, rc0.y, rc0.w, rc0.h, hwnd, ID_INFO, NULL, NULL);
 
           /* 进度条 */
-          rc0.x = 5;
-          rc0.w = rc.w - rc0.x*2;
-          rc0.h = 20;
+          rc0.x = 100;
+          rc0.w = rc.w - 200;
+          rc0.h = 30;
           rc0.y = 4*rc.h/5 - rc0.h-10;
  
           //PROGRESSBAR_CFG结构体的大小
@@ -236,8 +239,8 @@ If you really want to reload resou-\r\nrces:\r\n\
           SendMessage(wnd_res_writer_progbar,PBM_SET_VALUE,TRUE,0);
 
           /* 烧录按钮 */
-          rc0.w = 230;
-          rc0.h = 25;
+          rc0.w = rc.w/2- 5*2;
+          rc0.h = 45;
           rc0.y = rc.h - rc0.h - 10;
           rc0.x = (rc.w - rc0.w)/2;
 
@@ -245,8 +248,8 @@ If you really want to reload resou-\r\nrces:\r\n\
                         rc0.x, rc0.y, rc0.w, rc0.h, hwnd, ID_BURN, NULL, NULL); 
 
           /* 复位按钮 */
-          rc0.w = 230;
-          rc0.h = 25;
+          rc0.w = rc.w/2 - 5*2;
+          rc0.h = 45;
           rc0.y = rc.h - rc0.h - 10;
           rc0.x = (rc.w - rc0.w)/2;
           
@@ -403,7 +406,7 @@ If you really want to reload resou-\r\nrces:\r\n\
 
       HLine(hdc, 0, rc0.h, GUI_XSIZE);
 
-      rc0.h = 25;
+      rc0.h = 45;
       rc0.y = rc.h - rc0.h - 10;
 
       SetPenColor(hdc, MapRGB(hdc, 200, 200, 200));

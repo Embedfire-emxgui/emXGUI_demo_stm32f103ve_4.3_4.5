@@ -231,7 +231,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				LED3_ON_FLAG =0;
 			}
-      
+      HFONT controlFont_64;
+			controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
       SetFont(hdc, controlFont_64);
 			
 			if(LED1_ON_FLAG ==1)
@@ -268,6 +269,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       DrawText(hdc, L"I", -1, &rc_blue, NULL);//绘制文字(居中对齐方式)
       
       EndPaint(hwnd, &ps);
+      DeleteFont(controlFont_64); 
+
       break;
     }
     case WM_DRAWITEM:

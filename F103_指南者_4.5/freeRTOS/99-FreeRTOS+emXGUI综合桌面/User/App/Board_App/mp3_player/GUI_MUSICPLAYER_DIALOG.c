@@ -453,14 +453,20 @@ static void button_owner_draw(DRAWITEM_HDR *ds)
   FillRect(hdc, &rc_cli);
 
   GetClientRect(hwnd, &rc_cli);//得到控件的位置
-  
+	
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
+	HFONT controlFont_48;
+	controlFont_48 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_48);		
   //播放键使用100*100的字体
   if(ds->ID == ID_BUTTON_START)
   {
+
     SetFont(hdc, controlFont_64);
   }
   else
   {
+		
     SetFont(hdc, controlFont_48);
   }
   
@@ -474,6 +480,8 @@ static void button_owner_draw(DRAWITEM_HDR *ds)
 
   DrawText(hdc, wbuf,-1,&rc_cli,DT_VCENTER);//绘制文字(居中对齐方式)
 
+	DeleteFont(controlFont_64);
+	DeleteFont(controlFont_48);
 }
 
 //透明文本

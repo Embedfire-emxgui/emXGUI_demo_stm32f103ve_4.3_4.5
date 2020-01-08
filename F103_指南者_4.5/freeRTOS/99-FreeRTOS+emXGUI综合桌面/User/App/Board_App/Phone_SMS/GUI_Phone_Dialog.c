@@ -137,13 +137,15 @@ static void Phone_CircleButton_OwnerDraw(DRAWITEM_HDR *ds, COLOR_RGB32 bk_colous
 
 	SetBrushColor(hdc, MapRGB888(hdc, bk_colous));
 	FillCircle(hdc, rc.w / 2, rc.h / 2, rc.h / 2);
-  
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   SetFont(hdc, controlFont_64);
 	GetWindowText(hwnd, wbuf, 128); //获得按钮控件的文字
   rc.x -= 2;
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER | DT_CENTER);//绘制文字(居中对齐方式)
 
   SetFont(hdc, defaultFont);    // 恢复默认字体
+	DeleteFont(controlFont_64); 
 }
 
 /*
@@ -178,13 +180,15 @@ static void Phone_DelButton_OwnerDraw(DRAWITEM_HDR *ds)
 	SetBrushColor(hdc, MapRGB(hdc, 242, 242, 242));
 	FillRect(hdc, &rc);
   
-
+	HFONT controlFont_64;
+	controlFont_64 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_64);
   SetFont(hdc, controlFont_64);
 	GetWindowText(hwnd, wbuf, 128); //获得按钮控件的文字
   rc.y += 4;
 	DrawText(hdc, wbuf, -1, &rc, DT_VCENTER | DT_CENTER);//绘制文字(居中对齐方式)
 
   SetFont(hdc, defaultFont);    // 恢复默认字体
+	DeleteFont(controlFont_64); 
 
 }
 

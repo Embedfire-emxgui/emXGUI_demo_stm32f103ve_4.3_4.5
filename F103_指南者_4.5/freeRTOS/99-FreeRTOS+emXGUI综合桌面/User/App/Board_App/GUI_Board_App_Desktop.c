@@ -55,14 +55,14 @@ static void dummy(void *p)
 //extern void GUI_AVIList_DIALOG(void);
 //extern void GUI_DEMO_RectSpeed(void);
 //extern void	GUI_RES_WRITER_DIALOG(void);
-//extern void	GUI_RES_Writer_Dialog(void);
 //extern void GUI_Boot_Interface_DIALOG(void);
 //extern void	GUI_PicViewer_Dialog(void);
-//extern void	GUI_App_Desktop(void);
+
 #if defined(Demo2)
 extern void	GUI_MUSICPLAYER_DIALOG(void);
 extern void GUI_RECORDER_DIALOG(void);
 #elif defined(Demo1)
+extern void	GUI_App_Desktop(void);
 extern void	GUI_LED_DIALOG(void);
 extern void	GUI_Camera_DIALOG(void);
 extern void GUI_ADC_CollectVoltage_Dialog(void);
@@ -76,6 +76,8 @@ extern void gui_network_dialog(void);
 extern void GUI_SimulateUDisk_Dialog(void);
 extern void GUI_LED_KEY_Dialog(void);
 extern void GUI_Beeper_Dialog(void);
+extern void	GUI_RES_Writer_Dialog(void);
+
 #elif defined(OnlyCam)
 extern void	GUI_Camera_DIALOG(void);
 #endif
@@ -148,10 +150,9 @@ static const struct __obj_list menu_list_1[] = {
 #if defined(Demo2)
       L"MP3播放器",	  NULL,	  L"I", RGB_WHITE, GUI_MUSICPLAYER_DIALOG,//dummy,//	
       L"录音机",	    NULL,	  L"Y", RGB_WHITE, GUI_RECORDER_DIALOG,
-//      L"FlashWriter", NULL,	  L"b", RGB_WHITE, GUI_RES_Writer_Dialog,
 
 #elif defined(Demo1)
-//      L"GUI应用",		  NULL, 	L"J", RGB_WHITE, GUI_App_Desktop,//dummy,//
+      L"GUI应用",		  NULL, 	L"J", RGB_WHITE, GUI_App_Desktop,//dummy,//
       L"RGB彩灯",		  NULL,	  L"L", RGB_WHITE, GUI_LED_DIALOG,//dummy,//GUI_LED_DIALOG
       L"摄像头",		  NULL,	  L"M", RGB_WHITE, GUI_Camera_DIALOG,//dummy,//	
 
@@ -168,6 +169,8 @@ static const struct __obj_list menu_list_1[] = {
 //  
       L"电压表",		  NULL,	  L"W", RGB_WHITE, GUI_ADC_CollectVoltage_Dialog,  
       L"温湿度",	    NULL,   L"O", RGB_WHITE, GUI_T_RH_Dialog,
+			L"FlashWriter", NULL,	  L"b", RGB_WHITE, GUI_RES_Writer_Dialog,
+
 #elif defined(OnlyCam)
       L"摄像头",		  NULL,	  L"M", RGB_WHITE, GUI_Camera_DIALOG,//dummy,//	
 #endif
@@ -235,7 +238,8 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
     //  
     //  FillCircle(hdc,rc.x+rc.w/2,rc.x+rc.w/2,rc.w/2); //用矩形填充背景FillCircle
     //	DrawCircle(hdc,rc.x+rc.w/2,rc.x+rc.w/2,rc.w/2); //画矩形外框
-
+		HFONT controlFont_32;
+		controlFont_32 = GUI_Init_Extern_Font_Stream(GUI_CONTROL_FONT_32);
       /* 使用控制图标字体 */
     SetFont(hdc, controlFont_32);
     //  SetTextColor(hdc,MapRGB(hdc,255,255,255));
@@ -247,7 +251,7 @@ static void button_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 
     /* 恢复默认字体 */
     SetFont(hdc, defaultFont);
-
+		DeleteFont(controlFont_32);	
 }
 
 
