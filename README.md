@@ -1,9 +1,9 @@
 关于本项目
 ------------------
 本项目通过git开源
--  github仓库地址：https://github.com/Embdefire/emXGUI_demo_stm32f103_2.8_3.2
+-  github仓库地址：https://github.com/Embdefire/emXGUI_demo_stm32f103ve_4.3_4.5
 
--  gitee 地址：https://gitee.com/wildfireteam/emXGUI_demo_stm32f103_2.8_3.2
+-  gitee 地址：https://gitee.com/wildfireteam/emXGUI_demo_stm32f103ve_4.3_4.5
 
 霸道开发板emxGUI综合程序简介
 ------------------
@@ -36,9 +36,9 @@
 
 emXGUI综合程序所需要的硬件运行环境如下：
 
--   本仓库配套野火STM32F103_指南者开发板（**注意：本仓库默认适配F103指南者开发板**）
+-   本仓库配套野火STM32F103_指南者开发板
 
--   3.2寸液晶屏、2.8寸液晶屏
+-   4.3寸液晶屏、4.5寸液晶屏
 
 -   DAP下载器
 
@@ -66,7 +66,7 @@ emXGUI综合程序所需要的电脑软件环境主要包括编译器和USB转�
 
 ### 准备SD卡资源文件
 
-emXGUI示例程序运行需要SD卡资源文件，实验前需要准备一张SD卡，并使用读卡器在电脑上把它格式化成FAT32或FAT格式，然后把emXGUI综合程序资料中的“资源原件\SD卡”（3.2寸屏和2.8寸屏使用同一个资源文件）下的srcdata文件夹拷贝至SD卡的根目录，把拷贝好资源的SD卡插入到配套开发板的SD卡槽。
+emXGUI示例程序运行需要SD卡资源文件，实验前需要准备一张SD卡，并使用读卡器在电脑上把它格式化成FAT32或FAT格式，然后把emXGUI综合程序资料中的“资源原件\SD卡”下的srcdata文件夹拷贝至SD卡的根目录，把拷贝好资源的SD卡插入到配套开发板的SD卡槽。
 
 ### 准备开发板
 
